@@ -127,6 +127,16 @@ open class RingProgressView: UIView {
         }
     }
     
+    /// The progress knob imagem if set it'll add a knob image to the end of the progress layers
+    @IBInspectable open var knobImage: UIImage? {
+        get {
+            return ringProgressLayer.knobImage
+        }
+        set {
+            ringProgressLayer.knobImage = newValue
+        }
+    }
+    
     open override class var layerClass: AnyClass {
         return RingProgressLayer.self
     }

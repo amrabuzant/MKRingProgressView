@@ -91,6 +91,13 @@ open class RingProgressLayer: CALayer {
         }
     }
     
+    /// The progress knob imagem if set it'll add a knob image to the end of the progress layers
+    @objc open var knobImage: UIImage? {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
     /// The current progress shown by the view.
     /// Values less than 0.0 are clamped. Values greater than 1.0 present multiple revolutions of the progress ring.
     @NSManaged public var progress: CGFloat
@@ -212,6 +219,7 @@ open class RingProgressLayer: CALayer {
         }
         
         // Draw shadow and progress end
+        let arcEnd = CGPoint(x: c.x + r * cos(angle1), y: c.y + r * sin(angle1))
         
         if p > 0.0 || !hidesRingForZeroProgress {
             context.saveGState()
@@ -239,8 +247,6 @@ open class RingProgressLayer: CALayer {
                     color: UIColor(white: 0.0, alpha: endShadowOpacity).cgColor
                 )
             }
-            
-            let arcEnd = CGPoint(x: c.x + r * cos(angle1), y: c.y + r * sin(angle1))
             
             let shadowPath: UIBezierPath = {
                 switch progressStyle {
@@ -333,6 +339,18 @@ open class RingProgressLayer: CALayer {
                 context.addPath(arc1Path.cgPath)
                 context.strokePath()
             }
+        }
+        
+        // Draw knob image if available
+        if let knobImage = knobImage {
+            let knobSize = CGSize(width: w, height: w)
+            let knobRect = CGRect(
+                x: arcEnd.x - knobSize.width / 2,
+                y: arcEnd.y - knobSize.height / 2,
+                width: knobSize.width,
+                height: knobSize.height
+            )
+            context.draw(knobImage.cgImage!, in: knobRect)
         }
     }
 }
